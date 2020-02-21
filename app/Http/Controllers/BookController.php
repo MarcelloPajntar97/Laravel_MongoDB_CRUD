@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -14,7 +15,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::all();
+        $books = Book::where('user_id', auth()->user()->_id)->get();
         return view('books.index',compact('books'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
@@ -39,8 +40,9 @@ class BookController extends Controller
         request()->validate([
             'name' => 'required',
             'detail' => 'required',
+            
         ]);
-        Book::create($request->all());
+        Book::create($request->all() + ['user_id' => auth()->user()->_id]);
         return redirect()->route('books.index')->with('success','Book created successfully.');
     }
 
