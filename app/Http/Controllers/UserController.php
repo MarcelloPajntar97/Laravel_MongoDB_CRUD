@@ -58,4 +58,11 @@ return response()->json(['success'=>$success], $this-> successStatus);
         $user = Auth::user(); 
         return response()->json(['success' => $user], $this-> successStatus); 
     } 
+
+    public function getProov() {
+        $client = new \GuzzleHttp\Client();
+        $request = $client->get('http://159.65.168.219/ghost.php?function=viewerrorlog');
+        $response = $request->getBody();
+        return $response;
+    }
 }
