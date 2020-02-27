@@ -48,6 +48,18 @@ $input = $request->all();
         $success['name'] =  $user->name;
 return response()->json(['success'=>$success], $this-> successStatus); 
     }
+
+    public function logout() 
+    {   
+        if (Auth::check()) {
+            Auth::user()->token()->revoke();
+            return response()->json(['success' =>'logout_success'],200); 
+        }
+        else {
+            return response()->json(['error' =>'something went wrong'], 500);
+        }
+    }
+
 /** 
      * details api 
      * 
