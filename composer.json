@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.1.3",
+        "aloha/twilio": "^4.0",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.5",
         "jenssegers/mongodb": "3.5",
