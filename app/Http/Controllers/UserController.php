@@ -35,7 +35,8 @@ class UserController extends Controller
             //echo $tok;
             if ($user->token_2fa == null) {
                 //User::create(['token_2fa' => mt_rand(10000,99999)]);
-                $user->push('token_2fa', (string)$tok);
+                //$user->push('token_2fa', (string)$tok);
+                $user->update(['token_2fa' => (string)$tok]);
             }
             else {
                 
@@ -52,9 +53,7 @@ class UserController extends Controller
         $data = array('name'=>$user->name, 'body' => (string)$tok, 'email' => $user->email);
         
         Mail::send([], $data, function($message) use ($data) {
-
             $message->to($data['email'], $data['name'])
-
                     ->subject('Code security')
                     ->setBody($data['body']);
         });
@@ -64,7 +63,9 @@ class UserController extends Controller
         // $request = $client->get('http://localhost:8000/api/2fa');
         // $response = $request->getBody();
         // return $response;
-        return response()->json(['success' => 'tok save'], 200); 
+        $success['message'] = 'code sent check your email';
+        $success['user'] = $user->_id;
+        return response()->json(['success' => $success], 200); 
     //     $client = new \GuzzleHttp\Client();
     // //$body['name'] = "Testing";
     // $url = "http://localhost:8000/api/2fa";
@@ -79,9 +80,11 @@ class UserController extends Controller
     }
 
     public function twofactor() {
-        $user = User::find('5e5b7ff02b8adb1ff5791382');
+        $id = request('iduser');
+        $user = User::find($id);
         //$proov = request('2fa');
         //echo gettype($proov);
+        //prevenzione da possibili attacchi
         if ($user->token_2fa == null) {
             return response()->json(['error' => 'something went wrong'], 401);
         }
